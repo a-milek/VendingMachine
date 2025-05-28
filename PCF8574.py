@@ -33,7 +33,7 @@ class PCF8574:
 
     def click(self, channel):
         self.set_channel(channel, 1)
-        time.sleep(2)
+        time.sleep(0.1)
         self.set_channel(channel, 0)
 
 
