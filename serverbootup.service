@@ -1,0 +1,10 @@
+[Unit]
+Description=Enabling the Vending Machine Server
+After=multi-user.target
+
+[Service]
+ExecStart=/home/amilek/Documents/Server/serverscript.sh
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

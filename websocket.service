@@ -1,0 +1,9 @@
+[Unit]
+Description= Enabling the Websocket Service
+After=multi-user.target
+
+[Service]
+ExecStart=/home/amilek/Documents/Server/websocketscript.sh
+
+[Install]
+WantedBy=multi-user.target
