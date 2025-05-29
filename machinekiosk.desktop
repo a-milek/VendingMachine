@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Vending Machine Kiosk
+Comment=Launch Chromium in kiosk mode with vending machine page
+Exec=chromium-browser --kiosk http://localhost:8080/vending-machines/index.html
+Icon=chromium
+Terminal=false
+Type=Application
+Categories=Utility;WebBrowser;
