@@ -12,7 +12,6 @@ asyncio.set_event_loop(loop)  # For access across threads
 
 # Store received lines in a list
 received_lines = []
-reset_flag = False  # Flag to indicate if reset is needed when "LCD Proper" is received
 
 
 class PrintLines(LineReader):
@@ -22,13 +21,6 @@ class PrintLines(LineReader):
 
     def handle_line(self, data):
         sys.stdout.write(f'Line received: {repr(data)}\n')
-        set_done = False
-        # Process and send the message only if it's valid
-        if "LCD Proper" in data:
-            set_done = True
-            # break
-            # Reset the received lines and start a new message
-            # received_lines.clear()
 
         product_version = [
             "Wybierz produkt",
@@ -46,18 +38,18 @@ class PrintLines(LineReader):
             "kt     Wybierz produ",
             "t    Wybierz produku",
             "t     Wybierz produk",
-
         ]
 
+        # Normalize the line
         if any(fragment in data for fragment in product_version):
             received_lines.append("Wybierz produkt")
         else:
             received_lines.append(data.strip())
 
-        # If we have 5 lines, send them to WebSocket clients
-        if set_done:
-            combined_data = "\n".join(received_lines)
-            print("Sending to clients:", combined_data)  # Add this log to check what is sent
+        # If we have at least 4 lines, send the first 4 and remove them
+        while len(received_lines) >= 4:
+            combined_data = "\n".join(received_lines[:4])
+            print("Sending to clients:", combined_data)
             asyncio.run_coroutine_threadsafe(
                 send_to_all_clients(json.dumps({
                     "type": "serial",
@@ -65,7 +57,8 @@ class PrintLines(LineReader):
                 })),
                 loop
             )
-            received_lines.clear()  # Reset for next batch
+            # Remove the sent lines
+            del received_lines[:4]
 
     def connection_lost(self, exc):
         if exc:
@@ -73,8 +66,8 @@ class PrintLines(LineReader):
         sys.stdout.write('Serial port closed\n')
 
 
-# Use COM5 (change if needed)
-ser = serial.Serial('/dev/ttyUSB0', baudrate=230440, timeout=1)
+# Use your actual serial port here
+ser = serial.Serial('/dev/ttyUSB1', baudrate=230440, timeout=1)
 
 
 async def websocket_handler(websocket):

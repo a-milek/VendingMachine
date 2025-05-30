@@ -5,7 +5,7 @@ import serial
 
 
 class Arduino:
-    def __init__(self, port='/dev/ttyUSB1', baudrate=9600, timeout=0.1):
+    def __init__(self, port='/dev/ttyUSB0', baudrate=9600, timeout=0.1):
         self.arduino = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
         self.values = ['-','+','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
 
