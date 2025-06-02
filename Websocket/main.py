@@ -67,7 +67,7 @@ class PrintLines(LineReader):
 
 
 # Use your actual serial port here
-ser = serial.Serial('/dev/ttyUSB1', baudrate=230440, timeout=1)
+ser = serial.Serial('/dev/serial/by-path/platform-xhci-hcd.0-usb-0:2:1.0-port0', baudrate=230440, timeout=1)
 
 
 async def websocket_handler(websocket):
