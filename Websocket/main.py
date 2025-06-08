@@ -6,6 +6,7 @@ import json
 from serial.threaded import LineReader, ReaderThread
 import websockets
 import asyncio
+import time
 
 connected_clients = set()
 loop = asyncio.new_event_loop()
@@ -24,41 +25,44 @@ class PrintLines(LineReader):
         sys.stdout.write('Serial port opened\n')
 
     def handle_line(self, data):
-        sys.stdout.write(f'Line received: {repr(data)}\n')
-        line = data.strip()
+        try:
+            sys.stdout.write(f'Line received: {repr(data)}\n')
+            line = data.strip()
 
-        if "LCD Proper" in line:
-            self.received_lines = []
-            self.receiving = True
-            self.lines_to_collect = 4  # start collecting 4 lines AFTER "LCD Proper"
-            return
-
-        if self.receiving:
-            self.received_lines.append(line)
-            self.lines_to_collect -= 1
-
-            if self.lines_to_collect == 0:
-                combined_data = "\n".join(self.received_lines)
-                print("Sending to clients:", combined_data)
-                asyncio.run_coroutine_threadsafe(
-                    send_to_all_clients(json.dumps({
-                        "type": "serial",
-                        "message": combined_data
-                    })),
-                    loop
-                )
+            if "LCD Proper" in line:
                 self.received_lines = []
-                self.receiving = False
+                self.receiving = True
+                self.lines_to_collect = 4  # start collecting 4 lines AFTER "LCD Proper"
+                return
+
+            if self.receiving:
+                self.received_lines.append(line)
+                self.lines_to_collect -= 1
+
+                if self.lines_to_collect == 0:
+                    combined_data = "\n".join(self.received_lines)
+                    print("Sending to clients:", repr(combined_data))
+                    asyncio.run_coroutine_threadsafe(
+                        send_to_all_clients(json.dumps({
+                            "type": "serial",
+                            "message": combined_data
+                        })),
+                        loop
+                    )
+                    self.received_lines = []
+                    self.receiving = False
+        except Exception:
+            print("Exception in handle_line:")
+            traceback.print_exc()
 
     def connection_lost(self, exc):
+        print("Connection lost called")
         if exc:
+            print("Exception during connection lost:")
             traceback.print_exc()
         sys.stdout.write('Serial port closed\n')
 
 
-# Set up the serial port (adjust COM port and baud rate as needed)
-# ser = serial.Serial('COM3', baudrate=230440, timeout=1)
-ser = serial.Serial('/dev/serial/by-path/platform-xhci-hcd.0-usb-0:2:1.0-port0', baudrate=230440, timeout=1)
 async def websocket_handler(websocket):
     print("Client connected")
     connected_clients.add(websocket)
@@ -81,17 +85,27 @@ async def send_to_all_clients(message):
         await asyncio.gather(*[client.send(message) for client in connected_clients])
 
 
-if __name__ == "__main__":
-    with ReaderThread(ser, PrintLines) as protocol:
-        # Start the WebSocket server
-        ws_server = loop.run_until_complete(start_websocket_server())
+def main():
+    ser = serial.Serial('/dev/serial/by-path/platform-xhci-hcd.0-usb-0:2:1.0-port0', baudrate=230440, timeout=1)
 
+    while True:
         try:
-            loop.run_forever()
-        except KeyboardInterrupt:
-            print("Shutting down...")
+            with ReaderThread(ser, PrintLines) as protocol:
+                # Start the WebSocket server once per program run
+                ws_server = loop.run_until_complete(start_websocket_server())
+                print("WebSocket server running.")
+                loop.run_forever()
+        except Exception as e:
+            print(f"Exception in main loop: {e}")
+            traceback.print_exc()
+            print("Restarting serial connection after 3 seconds...")
+            time.sleep(3)
         finally:
+            try:
+                ser.close()
+                print("Serial port closed in finally.")
+            except Exception as e:
+                print(f"Error closing serial port: {e}")
 
-            ws_server.close()
-            loop.run_until_complete(ws_server.wait_closed())
-            loop.stop()
+if __name__ == "__main__":
+    main()
