@@ -57,9 +57,8 @@ class PrintLines(LineReader):
 
 
 # Set up the serial port (adjust COM port and baud rate as needed)
-ser = serial.Serial('COM3', baudrate=230440, timeout=1)
-
-
+# ser = serial.Serial('COM3', baudrate=230440, timeout=1)
+ser = serial.Serial('/dev/serial/by-path/platform-xhci-hcd.0-usb-0:2:1.0-port0', baudrate=230440, timeout=1)
 async def websocket_handler(websocket):
     print("Client connected")
     connected_clients.add(websocket)
