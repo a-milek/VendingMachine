@@ -28,9 +28,11 @@ def handle_order():
         return {"error": "Missing servId"}
 
     serv_id = data["servId"]
+
     print("Order received with servId:", serv_id)
 
     try:
+
         arduino.click(serv_id)
         return {"status": "OK", "received": serv_id}
     except Exception as e:
