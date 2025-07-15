@@ -17,18 +17,10 @@ class Arduino:
 
     def click(self, key):
         try:
-            if isinstance(key, int):
-                index = key
-            elif isinstance(key, str):
-                key = key.upper()
-                if key in self.char_to_index:
-                    index = self.char_to_index[key]
-                elif key.isdigit() or (len(key) == 1 and key in "ABCDEF"):
-                    index = int(key, 16)
-                else:
-                    raise ValueError(f"Invalid key '{key}'")
-            else:
-                raise ValueError(f"Unsupported type: {type(key)}")
+            # zawsze traktuj key jako string
+            key_str = str(key).upper()
+            # szukaj indeksu key_str w self.values
+            index = self.values.index(key_str)
 
             self.write(index)
             time.sleep(0.05)
