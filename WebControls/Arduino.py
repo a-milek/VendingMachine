@@ -15,24 +15,24 @@ class Arduino:
         self.arduino.write(value.encode('utf-8'))
 
     def click(self, key):
-    try:
-        if isinstance(key, int):
-            index = key
-        elif isinstance(key, str):
-            key = key.upper()
-            if key in self.char_to_index:
-                index = self.char_to_index[key]
-            elif key.isdigit() or (len(key) == 1 and key in "ABCDEF"):
-                index = int(key, 16)
+        try:
+            if isinstance(key, int):
+                index = key
+            elif isinstance(key, str):
+                key = key.upper()
+                if key in self.char_to_index:
+                    index = self.char_to_index[key]
+                elif key.isdigit() or (len(key) == 1 and key in "ABCDEF"):
+                    index = int(key, 16)
+                else:
+                    raise ValueError(f"Invalid key '{key}'")
             else:
-                raise ValueError(f"Invalid key '{key}'")
-        else:
-            raise ValueError(f"Unsupported type: {type(key)}")
+                raise ValueError(f"Unsupported type: {type(key)}")
 
-        self.write(index)
-        time.sleep(0.05)
-        self.arduino.write(b'p')
+            self.write(index)
+            time.sleep(0.05)
+            self.arduino.write(b'p')
 
-    except (ValueError, IndexError) as e:
-        print(f"[Arduino] Invalid input '{key}': {e}")
+        except (ValueError, IndexError) as e:
+            print(f"[Arduino] Invalid input '{key}': {e}")
 
