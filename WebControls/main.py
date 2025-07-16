@@ -6,8 +6,6 @@ from Arduino import Arduino
 import sys
 import os
 
-
-
 arduino = Arduino()
 
 
@@ -19,6 +17,7 @@ def serve_pomodoro(filepath):
 @route('/vending-machines/<filepath:path>')
 def serve_vending(filepath):
     return static_file(filepath, root='./dist')
+
 
 @route('/vending-machines/order', method='POST')
 def handle_order():
@@ -40,13 +39,11 @@ def handle_order():
         response.status = 500
         return {"error": str(e)}
 
+
 # Run the server
 def run_server():
     run(host="0.0.0.0", port=8080, debug=True)
 
+
 if __name__ == '__main__':
     run_server()
-
-
-
-
