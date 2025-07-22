@@ -31,13 +31,29 @@ def handle_order():
     print("Order received with servId:", serv_id)
 
     try:
+        if isinstance(serv_id, str):
+            serv_id = serv_id.upper()  # na wypadek małych liter
 
-        arduino.click(serv_id)
-        return {"status": "OK", "received": serv_id}
+            if serv_id.isdigit():
+                index = int(serv_id)
+            elif 'A' <= serv_id <= 'H':
+                index = 10 + ord(serv_id) - ord('A')  # A→10, B→11, ..., H→17
+            elif serv_id == '+':
+                index = 1
+            elif serv_id == '-':
+                index = 0
+            else:
+                raise ValueError(f"Nieznany servId: {serv_id}")
+        else:
+            index = int(serv_id)  # np. jeśli to już int
+
+        arduino.click_by_index(index)
+        return True
+
     except Exception as e:
-        print("Error while sending command to Arduino:", e)
-        response.status = 500
-        return {"error": str(e)}
+        print(f"Error while sending command to Arduino: {e}")
+        return True
+
 
 
 # Run the server
