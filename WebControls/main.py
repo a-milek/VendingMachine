@@ -54,9 +54,7 @@ def handle_order():
         print(f"Error while sending command to Arduino: {e}")
         traceback.print_exc()
         os._exit(1)
-
         return True
-
 
 
 # Run the server
