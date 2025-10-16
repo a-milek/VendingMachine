@@ -45,13 +45,14 @@ def handle_order():
             else:
                 raise ValueError(f"Nieznany servId: {serv_id}")
         else:
-            index = int(serv_id)  # np. jeśli to już int
+            index = int(serv_id)
 
         arduino.click_by_index(index)
         return True
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
+        os._exit(1)
         return True
 
 
