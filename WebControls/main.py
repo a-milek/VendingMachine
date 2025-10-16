@@ -1,6 +1,6 @@
 import threading
 import time
-
+import traceback
 from bottle import route, run, static_file, request, response
 from Arduino import Arduino
 import sys
