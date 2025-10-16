@@ -7,6 +7,7 @@ from serial.threaded import LineReader, ReaderThread
 import websockets
 import asyncio
 import time
+import os
 
 connected_clients = set()
 loop = asyncio.new_event_loop()
