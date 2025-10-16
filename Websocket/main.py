@@ -65,12 +65,12 @@ class PrintLines(LineReader):
         )
 
 
-    def connection_lost(self, exc):
-        print("Connection lost called")
-        if exc:
-            print("Exception during connection lost:")
-            traceback.print_exc()
-        sys.stdout.write('Serial port closed\n')
+    # def connection_lost(self, exc):
+    #     print("Connection lost called")
+    #     if exc:
+    #         print("Exception during connection lost:")
+    #         traceback.print_exc()
+    #     sys.stdout.write('Serial port closed\n')
 
 
 async def websocket_handler(websocket):
