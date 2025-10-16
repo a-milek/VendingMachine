@@ -1,5 +1,6 @@
 import threading
 import time
+import traceback
 
 from bottle import route, run, static_file, request, response
 from Arduino import Arduino
@@ -52,6 +53,8 @@ def handle_order():
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
+	traceback.print_exc()
+        os._exit(1)
         return True
 
 

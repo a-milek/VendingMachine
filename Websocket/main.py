@@ -7,6 +7,7 @@ from serial.threaded import LineReader, ReaderThread
 import websockets
 import asyncio
 import time
+import os
 
 connected_clients = set()
 loop = asyncio.new_event_loop()
@@ -71,7 +72,7 @@ class PrintLines(LineReader):
             print("Exception during connection lost:")
             traceback.print_exc()
         sys.stdout.write('Serial port closed\n')
-
+	os._exit(1)
 
 async def websocket_handler(websocket):
     print("Client connected")

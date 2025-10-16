@@ -1,0 +1,4 @@
+2025/10/06-15:29:25.192 4 Reusing MANIFEST /home/amilek/.config/chromium/Default/Local Storage/leveldb/MANIFEST-000001
+2025/10/06-15:29:25.208 4 Recovering log #7
+2025/10/06-15:29:25.209 4 (ignoring error) /home/amilek/.config/chromium/Default/Local Storage/leveldb/000007.log: dropping 2603 bytes; Corruption: missing start of fragmented record(2)
+2025/10/06-15:29:25.209 4 Reusing old log /home/amilek/.config/chromium/Default/Local Storage/leveldb/000007.log 
