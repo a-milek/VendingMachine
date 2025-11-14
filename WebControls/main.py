@@ -9,14 +9,14 @@ import os
 
 arduino = Arduino()
 
-PING_INTERVAL = 10
+PING_INTERVAL = 5
 PING_ENABLED = True
 
 # -------------------------------
 # Arduino ping thread
 # -------------------------------
 def arduino_ping_loop():
-    time.sleep(5)
+
     while PING_ENABLED:
         try:
             arduino.ping()   # ping using echo (#)
