@@ -2,7 +2,7 @@ import time
 import serial
 
 class Arduino:
-    def __init__(self, port='/dev/serial/by-path/platform-xhci-hcd.1-usb-0:2:1.0-port0', baudrate=9600, timeout=0.1):
+    def __init__(self, port='COM1', baudrate=9600, timeout=0.1):
         self.arduino = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
         self.values = ['-', '+', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H','I']
 
@@ -22,4 +22,20 @@ class Arduino:
             raise ValueError(f"Nieznany klawisz: {key}")
         index = self.values.index(key)
         self.click_by_index(index)
+
+    def ping(self):
+        try:
+            # Send a ping character (anything not used: '#' is safe)
+            self.arduino.write(b'#')
+
+            # Read the echo
+            reply = self.arduino.read(1)
+
+            if reply != b'#':
+                raise Exception(f"Bad ping echo: {reply}")
+
+            return True
+
+        except Exception as e:
+            raise Exception(f"Arduino ping failed: {e}")
 

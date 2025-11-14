@@ -53,11 +53,25 @@ def handle_order():
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
-	traceback.print_exc()
+        traceback.print_exc()
         os._exit(1)
         return True
 
+    def arduino_ping_loop():
+        while PING_ENABLED:
+            try:
+                # Replace with ANY safe operation:
+                arduino.ping()  # or arduino.readDigital(2), etc.
 
+                print("[PING] Arduino OK")
+
+            except Exception as e:
+                print(f"Ping error")
+                traceback.print_exc()
+                os._exit(1)
+                return True  # unreachable, but keeps same structure
+
+            time.sleep(PING_INTERVAL)
 
 # Run the server
 def run_server():
