@@ -31,7 +31,7 @@ class Arduino:
             # Read the echo
             reply = self.arduino.read(1)
 
-            if reply != '#':
+            if reply != b'#':
                 raise Exception(f"Bad ping echo: {reply}")
 
             return True
