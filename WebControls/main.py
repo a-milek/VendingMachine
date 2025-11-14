@@ -75,6 +75,7 @@ def handle_order():
 
 # Run the server
 def run_server():
+    threading.Thread(target=arduino_ping_loop, daemon=True).start()
     run(host="0.0.0.0", port=8080, debug=True)
 
 
