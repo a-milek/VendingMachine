@@ -9,14 +9,14 @@ import os
 
 arduino = Arduino()
 
-PING_INTERVAL = 30
+PING_INTERVAL = 10
 PING_ENABLED = True
 
 # -------------------------------
 # Arduino ping thread
 # -------------------------------
 def arduino_ping_loop():
-    time.sleep(10)
+    time.sleep(5)
     while PING_ENABLED:
         try:
             arduino.ping()   # ping using echo (#)
@@ -26,8 +26,8 @@ def arduino_ping_loop():
         except Exception as e:
             print(f"Error while sending command to Arduino: {e}")
             traceback.print_exc()
-            # os._exit(1)
-            # return True  # unreachable
+            os._exit(1)
+            return True  # unreachable
 
         time.sleep(PING_INTERVAL)
 
