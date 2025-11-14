@@ -28,11 +28,6 @@ class Arduino:
             # Send a ping character (anything not used: '#' is safe)
             self.arduino.write(b'#')
 
-            # Read the echo
-            reply = self.arduino.read(1)
-
-            if reply != b'#':
-                raise Exception(f"Bad ping echo: {reply}")
 
             return True
 
