@@ -16,7 +16,7 @@ PING_ENABLED = True
 # Arduino ping thread
 # -------------------------------
 def arduino_ping_loop():
-    time.sleep(5)
+    time.sleep(10)
     while PING_ENABLED:
         try:
             arduino.ping()   # ping using echo (#)
