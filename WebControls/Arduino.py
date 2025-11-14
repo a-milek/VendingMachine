@@ -26,12 +26,12 @@ class Arduino:
     def ping(self):
         try:
             # Send a ping character (anything not used: '#' is safe)
-            self.arduino.write(b'#')
+            self.arduino.write('#')
 
             # Read the echo
             reply = self.arduino.read(1)
 
-            if reply != b'#':
+            if reply != '#':
                 raise Exception(f"Bad ping echo: {reply}")
 
             return True
