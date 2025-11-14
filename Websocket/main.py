@@ -30,7 +30,7 @@ class PrintLines(LineReader):
     def handle_line(self, data):
         global screen_state_json
         try:
-            sys.stdout.write(f'Line received: {repr(data)}\n')
+            # sys.stdout.write(f'Line received: {repr(data)}\n')
             line = data.strip()
 
             if "LCD Proper" in line:
