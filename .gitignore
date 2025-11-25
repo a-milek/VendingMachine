@@ -1,2 +1,4 @@
 WebControls/myenv/
 Websocket/venv/
+Websocket/__pycache__/
+WebControls/__pycache__/
