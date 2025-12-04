@@ -60,14 +60,26 @@ class ScreenInterpreter:
 
             # Cena
             if line.startswith("Cena"):
-                match = re.search(r"(\d+\.\d{2})", line)
-                if match:
-                    self.last_valid_price = match.group(1)
-                    state["current_price"] = float(self.last_valid_price)
-                else:
-                    if self.last_valid_price:
-                        state["current_price"] = float(self.last_valid_price)
-                continue  # nie dodajemy linii do remaining_lines
+                # 1) Format z przecinkiem lub kropką → używamy jako float
+                match_decimal = re.search(r"(\d+[.,]\d+)", line)
+                if match_decimal:
+                    price = float(match_decimal.group(1).replace(",", "."))
+                    self.last_valid_price = price
+                    state["current_price"] = price
+                    continue
+
+                # 2) Format liczbowy bez separatora
+                match_int = re.search(r"(\d+)", line)
+                if match_int:
+                    price = float(match_int.group(1))  # ← używamy BEZ zmiany wartości
+                    self.last_valid_price = price
+                    state["current_price"] = price
+                    continue
+
+                # 3) Jeśli brak liczby → użyj poprzedniej
+                if self.last_valid_price is not None:
+                    state["current_price"] = self.last_valid_price
+                continue
 
             # pozostałe linie zostają
             state["remaining_lines"].append(line)
