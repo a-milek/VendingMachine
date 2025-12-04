@@ -3,6 +3,10 @@ import re
 
 class ScreenInterpreter:
 
+    def __init__(self):
+        # Add missing attribute!
+        self.last_valid_price = None
+
     def interpret_lines(self, raw_lines):
 
 
