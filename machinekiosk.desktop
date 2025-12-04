@@ -2,8 +2,9 @@
 Version=1.0
 Name=Vending Machine Kiosk
 Comment=Launch Chromium in kiosk mode with vending machine page
-Exec=chromium-browser --kiosk http://localhost:8080/vending-machines/index.html
+Exec=/bin/sh -c 'sleep 10 && exec chromium --kiosk http://localhost:8080/vending-machines/index.html --user-data-dir=/home/amilek/Documents/Server/chromium-kiosk-profile'
 Icon=chromium
 Terminal=false
 Type=Application
 Categories=Utility;WebBrowser;
+

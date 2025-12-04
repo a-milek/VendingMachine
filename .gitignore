@@ -1,2 +1,7 @@
 WebControls/myenv/
+WebControls/venv/
 Websocket/venv/
+venv/
+WebControls/.idea
+Websocket/.idea
+.idea

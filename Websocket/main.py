@@ -9,19 +9,21 @@ import asyncio
 import time
 import os
 
+from ScreenInterpreter import ScreenInterpreter  # zakładam, że klasa jest w tym pliku
+
 connected_clients = set()
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)  # For access across threads
 screen_state_json = None
 
+interpreter = ScreenInterpreter()  # Twój interpreter LCD
+
 class PrintLines(LineReader):
     def __init__(self):
         super().__init__()
-
         self.receiving = False
         self.received_lines = []
         self.lines_to_collect = 0
-
 
     def connection_made(self, transport):
         super(PrintLines, self).connection_made(transport)
@@ -30,13 +32,13 @@ class PrintLines(LineReader):
     def handle_line(self, data):
         global screen_state_json
         try:
-            # sys.stdout.write(f'Line received: {repr(data)}\n')
             line = data.strip()
 
+            # Rozpocznij zbieranie 4 linii po "LCD Proper"
             if "LCD Proper" in line:
                 self.received_lines = []
                 self.receiving = True
-                self.lines_to_collect = 4  # start collecting 4 lines AFTER "LCD Proper"
+                self.lines_to_collect = 4
                 return
 
             if self.receiving:
@@ -44,13 +46,17 @@ class PrintLines(LineReader):
                 self.lines_to_collect -= 1
 
                 if self.lines_to_collect == 0:
-                    combined_data = "\n".join(self.received_lines)
-                    print("Sending to clients:", repr(combined_data))
+                    # Interpretacja z ScreenInterpreter
+                    interpreted_lines, state = interpreter.interpret_lines(self.received_lines)
 
-                    screen_state_json=json.dumps({
-                            "type": "serial",
-                            "message": combined_data
-                        })
+                    screen_state_json = json.dumps({
+                        "type": "screen_update",
+                        "raw_lines": self.received_lines,
+                        "interpreted_lines": interpreted_lines,
+                        "state": state
+                    })
+
+                    print("Sending to clients:", screen_state_json)
 
                     self._send_screen_state_to_clients()
                     self.received_lines = []
@@ -64,7 +70,6 @@ class PrintLines(LineReader):
             send_to_all_clients(screen_state_json),
             loop
         )
-
 
     def connection_lost(self, exc):
         print("Connection lost called")
@@ -80,8 +85,6 @@ async def websocket_handler(websocket):
     if screen_state_json:
         await websocket.send(screen_state_json)
 
-
-
     try:
         async for message in websocket:
             print("Received from client:", message)
@@ -90,11 +93,9 @@ async def websocket_handler(websocket):
     finally:
         connected_clients.remove(websocket)
 
-
 async def start_websocket_server():
-    # test
     print("Starting WebSocket server on ws://localhost:8765/")
-    return await websockets.serve(websocket_handler,  "0.0.0.0", 8765)
+    return await websockets.serve(websocket_handler, "0.0.0.0", 8765)
 
 async def send_to_all_clients(message):
     if connected_clients:
@@ -106,7 +107,6 @@ def main():
     while True:
         try:
             with ReaderThread(ser, PrintLines):
-                # Start the WebSocket server once per program run
                 ws_server = loop.run_until_complete(start_websocket_server())
                 print("WebSocket server running.")
                 loop.run_forever()
