@@ -33,7 +33,7 @@ class ScreenInterpreter:
                 continue
 
             # LOADING — kontrolne znaki lub WYBRANY NAPOJ
-            if any(3 <= ord(ch) <= 7 for ch in line) or line.startswith("WYBRANY NAPOJ"):
+            if any(3 <= ord(ch) <= 7 for ch in line):
                 state["loading"] = True
 
             # Tryb TECH
