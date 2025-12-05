@@ -1,5 +1,9 @@
 WebControls/myenv/
+WebControls/venv/
 Websocket/venv/
-Websocket/__pycache__/
 WebControls/__pycache__/
-.idea/
+venv/
+WebControls/.idea
+Websocket/.idea
+.idea
+Websocket/__pycache__/

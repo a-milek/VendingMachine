@@ -1,16 +1,23 @@
 import threading
 import time
+
 import traceback
 
 from bottle import route, run, static_file, request, response
 from Arduino import Arduino
 import sys
 import os
+import pika
 
-arduino = Arduino()
+# arduino = Arduino()
 
 PING_INTERVAL = 5
-PING_ENABLED = True
+PING_ENABLED = False
+credentials = pika.PlainCredentials('username', '213413d33')
+connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.21.127', credentials=credentials))
+channel = connection.channel()
+channel.exchange_declare(exchange='coffee_orders', exchange_type='fanout', durable=False)
+
 
 # -------------------------------
 # Arduino ping thread
@@ -19,7 +26,7 @@ def arduino_ping_loop():
 
     while PING_ENABLED:
         try:
-            arduino.ping()   # ping using echo (#)
+            # arduino.ping()   # ping using echo (#)
 
             print("[PING] Arduino OK")
 
@@ -73,7 +80,17 @@ def handle_order():
         else:
             index = int(serv_id)
 
-        arduino.click_by_index(index)
+        # arduino.click_by_index(index)
+        message = f"coffee_event index={index}i"
+        channel.basic_publish(
+            exchange='coffee_orders',
+            routing_key='',
+            body=message.encode()
+        )
+        print(f" [x] Sent {message}")
+
+
+
         return True
 
     except Exception as e:
