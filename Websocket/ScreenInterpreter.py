@@ -31,6 +31,9 @@ class ScreenInterpreter:
 
                 # remaining_lines.append(line)  # zachowujemy linię
                 continue
+            if line.startswith("Brak cukru") :
+                state["sugar"] = None
+                continue
 
             # LOADING — kontrolne znaki lub WYBRANY NAPOJ
             if any(3 <= ord(ch) <= 7 for ch in line):
