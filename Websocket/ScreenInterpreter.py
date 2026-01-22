@@ -9,8 +9,6 @@ class ScreenInterpreter:
 
     def interpret_lines(self, raw_lines):
 
-
-
         state = {
             "tech": False,
             "loading": False,
@@ -20,7 +18,7 @@ class ScreenInterpreter:
             "timed_out": False,
             "sugar": None,
             "credit": None,
-            "remaining_lines":[]
+            "remaining_lines": []
         }
 
         for line in raw_lines:
@@ -31,7 +29,7 @@ class ScreenInterpreter:
 
                 # remaining_lines.append(line)  # zachowujemy linię
                 continue
-            if line.startswith("Brak cukru") :
+            if line.startswith("Brak cukru"):
                 state["sugar"] = None
                 continue
 
