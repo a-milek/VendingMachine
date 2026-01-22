@@ -11,8 +11,8 @@ import pika
 import requests
 from bottle import route, request, response
 
-# arduino = Arduino()
-# app = Bottle()
+arduino = Arduino()
+app = Bottle()
 
 PING_INTERVAL = 5
 PING_ENABLED = False
@@ -96,6 +96,7 @@ def handle_order():
             index = int(serv_id)
 
         arduino.click_by_index(index)
+
 
 
         return True
