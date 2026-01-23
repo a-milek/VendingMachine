@@ -97,9 +97,14 @@ def handle_order():
 
         arduino.click_by_index(index)
 
+        return {"success": True, "servId": serv_id}
 
+    except Exception as e:
+        print(f"Error while sending command to Arduino: {e}")
+        traceback.print_exc()
+        response.status = 500
+        return {"success": False, "error": str(e)}
 
-        return True
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
