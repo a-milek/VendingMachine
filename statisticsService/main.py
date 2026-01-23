@@ -37,6 +37,7 @@ product_counters = load_counters()
 @route('/statservice/order_complete', method='POST')
 def statistics_update():
     data = request.json
+    print("aaaa")
     if not data or "product_id" not in data:
         response.status = 400
         return {"error": "Missing product_id"}
