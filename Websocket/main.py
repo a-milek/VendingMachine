@@ -30,7 +30,7 @@ class PrintLines(LineReader):
     def handle_line(self, data):
         global screen_state_json
         try:
-            sys.stdout.write(f'Line received: {repr(data)}\n')
+        #    sys.stdout.write(f'Line received: {repr(data)}\n')
             line = data.strip()
 
             if "LCD Proper" in line:
@@ -45,7 +45,7 @@ class PrintLines(LineReader):
 
                 if self.lines_to_collect == 0:
                     combined_data = "\n".join(self.received_lines)
-                    print("Sending to clients:", repr(combined_data))
+             #       print("Sending to clients:", repr(combined_data))
 
                     screen_state_json = json.dumps({
                         "type": "serial",

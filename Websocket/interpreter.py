@@ -79,8 +79,8 @@ async def vending_client():
                 msg = await machine_ws.recv()
                 data = json.loads(msg)
 
-                print("\n=== Received from vending machine ===")
-                print(msg)
+                #print("\n=== Received from vending machine ===")
+                #print(msg)
 
                 raw_lines = extract_lines_from_message(data)
 
@@ -88,9 +88,9 @@ async def vending_client():
                     print("No LCD lines found.")
                     continue
 
-                print("\n--- RAW LCD LINES ---")
-                for line in raw_lines:
-                    print(repr(line))
+                #print("\n--- RAW LCD LINES ---")
+                #for line in raw_lines:
+                #    print(repr(line))
 
                 state = interpreter.interpret_lines(raw_lines)
 

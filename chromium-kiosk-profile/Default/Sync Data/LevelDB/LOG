@@ -1,2 +1,3 @@
-2025/08/25-09:24:04.839 b7b4 Creating DB /home/amilek/chromium-kiosk-profile/Default/Sync Data/LevelDB since it was missing.
-2025/08/25-09:24:04.889 b7b4 Reusing MANIFEST /home/amilek/chromium-kiosk-profile/Default/Sync Data/LevelDB/MANIFEST-000001
+2026/01/23-12:15:44.350 6a2 Reusing MANIFEST /home/amilek/Documents/Server/chromium-kiosk-profile/Default/Sync Data/LevelDB/MANIFEST-000001
+2026/01/23-12:15:44.439 6a2 Recovering log #3
+2026/01/23-12:15:44.441 6a2 Reusing old log /home/amilek/Documents/Server/chromium-kiosk-profile/Default/Sync Data/LevelDB/000003.log 

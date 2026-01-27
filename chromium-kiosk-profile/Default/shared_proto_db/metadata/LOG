@@ -1,2 +1,3 @@
-2025/08/25-09:24:05.070 b7b4 Creating DB /home/amilek/chromium-kiosk-profile/Default/shared_proto_db/metadata since it was missing.
-2025/08/25-09:24:05.097 b7b4 Reusing MANIFEST /home/amilek/chromium-kiosk-profile/Default/shared_proto_db/metadata/MANIFEST-000001
+2026/01/23-12:15:45.169 6a3 Reusing MANIFEST /home/amilek/Documents/Server/chromium-kiosk-profile/Default/shared_proto_db/metadata/MANIFEST-000001
+2026/01/23-12:15:45.170 6a3 Recovering log #3
+2026/01/23-12:15:45.178 6a3 Reusing old log /home/amilek/Documents/Server/chromium-kiosk-profile/Default/shared_proto_db/metadata/000003.log 
