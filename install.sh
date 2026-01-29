@@ -8,7 +8,7 @@ cd ..
 mv VendingMachine "$TARGET_DIR"
 cd "$TARGET_DIR/WebControls" || exit 1
 python3 -m venv venv
-source myenv/bin/activate
+source venv/bin/activate
 pip install bottle
 pip install websockets pyserial
 deactivate
