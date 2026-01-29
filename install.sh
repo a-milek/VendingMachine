@@ -58,6 +58,8 @@ systemctl restart telegraf
 
 chown -R $USER:$USER "$USER_HOME/.config/autostart"
 chown $USER:$USER "$USER_HOME/Documents/Server" -R
+chmod +x /home/amilek/Documents/Server/statisticsscript.sh
+
 
 echo "Setup complete."
 
