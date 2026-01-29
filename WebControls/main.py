@@ -1,14 +1,47 @@
 import threading
 import time
+import socket
 import traceback
-from bottle import route, run, static_file, request, response
+
+from bottle import route, run, static_file, request, response, Bottle, redirect
 from Arduino import Arduino
 import sys
 import os
+import pika
+import requests
+from bottle import route, request, response
 
 arduino = Arduino()
+app = Bottle()
+
+PING_INTERVAL = 5
+PING_ENABLED = False
 
 
+
+
+# -------------------------------
+# Arduino ping thread
+# -------------------------------
+def arduino_ping_loop():
+    while PING_ENABLED:
+        try:
+            arduino.ping()  # ping using echo (#)
+
+            print("[PING] Arduino OK")
+
+        except Exception as e:
+            print(f"Error while sending command to Arduino: {e}")
+            traceback.print_exc()
+            os._exit(1)
+            return True  # unreachable
+
+        time.sleep(PING_INTERVAL)
+
+
+# -------------------------------
+# Bottle routes
+# -------------------------------
 @route('/pomodoro-app/<filepath:path>')
 def serve_pomodoro(filepath):
     return static_file(filepath, root='C:/Users/Ania/Downloads/github-pages/artifact')
@@ -17,6 +50,21 @@ def serve_pomodoro(filepath):
 @route('/vending-machines/<filepath:path>')
 def serve_vending(filepath):
     return static_file(filepath, root='./dist')
+
+@route('/vending-machines/statservice/order_complete', method=['POST', 'OPTIONS'])
+def statservice_proxy():
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    if request.method == 'OPTIONS':
+        return
+
+    r = requests.post(
+        "http://localhost:8081/statservice/order_complete",
+        json=request.json
+    )
+    response.status = r.status_code
+    return r.content
 
 
 @route('/vending-machines/order', method='POST')
@@ -48,7 +96,14 @@ def handle_order():
             index = int(serv_id)
 
         arduino.click_by_index(index)
-        return True
+
+        return {"success": True, "servId": serv_id}
+
+    except Exception as e:
+        print(f"Error while sending command to Arduino: {e}")
+        traceback.print_exc()
+        response.status = 500
+        return {"success": False, "error": str(e)}
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
@@ -59,6 +114,7 @@ def handle_order():
 
 # Run the server
 def run_server():
+    threading.Thread(target=arduino_ping_loop, daemon=True).start()
     run(host="0.0.0.0", port=8080, debug=True)
 
 

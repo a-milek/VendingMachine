@@ -11,6 +11,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install bottle
 pip install websockets pyserial
+pip install pika
 deactivate
 
 
