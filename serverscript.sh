@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/amilek/Documents/Server/WebControls
-. /home/amilek/Documents/Server/WebControls/myenv/bin/activate
+. /home/amilek/Documents/Server/WebControls/venv/bin/activate
 python3 /home/amilek/Documents/Server/WebControls/main.py
 
 
