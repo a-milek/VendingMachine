@@ -12,6 +12,7 @@ source venv/bin/activate
 pip install bottle
 pip install websockets pyserial
 pip install pika
+pip install requests
 deactivate
 
 
