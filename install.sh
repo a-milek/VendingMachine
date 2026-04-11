@@ -51,7 +51,7 @@ gpg --show-keys --with-fingerprint --with-colons ./influxdata-archive.key 2>&1 \
 | sudo tee /etc/apt/keyrings/influxdata-archive.gpg > /dev/null \
 && echo 'deb [signed-by=/etc/apt/keyrings/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' \
 | sudo tee /etc/apt/sources.list.d/influxdata.list
-sudo apt-get update && sudo apt-get install telegraf
+sudo apt-get update && sudo apt-get -y install telegraf
 
 mv "$TARGET_DIR/telegraf.conf" /etc/telegraf/
 
@@ -62,7 +62,7 @@ chown -R $USER:$USER "$USER_HOME/.config/autostart"
 chown $USER:$USER "$USER_HOME/Documents/Server" -R
 chmod +x /home/amilek/Documents/Server/statisticsscript.sh
 
-sudo apt remove gnome-keyring
+sudo apt remove gnome-keyring || true
 
 echo "Setup complete."
 
