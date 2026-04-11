@@ -58,8 +58,14 @@ mv "$TARGET_DIR/telegraf.conf" /etc/telegraf/
 systemctl daemon-reload
 systemctl restart telegraf
 
-chown -R $USER:$USER "$USER_HOME/.config/autostart"
-chown $USER:$USER "$USER_HOME/Documents/Server" -R
+if id "$USER" >/dev/null 2>&1; then
+   chown -R $USER:$USER "$USER_HOME/.config/autostart"
+   chown -R $USER:$USER "$USER_HOME/Documents/Server" 
+else
+    echo '$USER not found, probably docker install'
+fi
+
+
 chmod +x /home/amilek/Documents/Server/statisticsscript.sh
 
 sudo apt remove gnome-keyring || true
