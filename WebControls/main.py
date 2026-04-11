@@ -11,7 +11,7 @@ import pika
 import requests
 from bottle import route, request, response
 
-arduino = Arduino()
+arduino = Arduino(port=os.getenv("VENDING_MACHINE_PORT_KEYBOARD") )
 app = Bottle()
 
 PING_INTERVAL = 5
@@ -80,12 +80,12 @@ def handle_order():
 
     try:
         if isinstance(serv_id, str):
-            serv_id = serv_id.upper()  # na wypadek małych liter
+            serv_id = serv_id.upper()
 
             if serv_id.isdigit():
                 index = int(serv_id)
             elif 'A' <= serv_id <= 'H':
-                index = 10 + ord(serv_id) - ord('A')  # A→10, B→11, ..., H→17
+                index = 10 + ord(serv_id) - ord('A')
             elif serv_id == '+':
                 index = 1
             elif serv_id == '-':
@@ -97,13 +97,8 @@ def handle_order():
 
         arduino.click_by_index(index)
 
-        return {"success": True, "servId": serv_id}
 
-    except Exception as e:
-        print(f"Error while sending command to Arduino: {e}")
-        traceback.print_exc()
-        response.status = 500
-        return {"success": False, "error": str(e)}
+        return True
 
     except Exception as e:
         print(f"Error while sending command to Arduino: {e}")
@@ -112,7 +107,6 @@ def handle_order():
         return True
 
 
-# Run the server
 def run_server():
     threading.Thread(target=arduino_ping_loop, daemon=True).start()
     run(host="0.0.0.0", port=8080, debug=True)
