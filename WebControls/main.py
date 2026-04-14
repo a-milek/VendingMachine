@@ -11,7 +11,8 @@ import pika
 import requests
 from bottle import route, request, response
 
-arduino = Arduino(port=os.getenv("VENDING_MACHINE_PORT_KEYBOARD") )
+arduino = Arduino(port=os.getenv("VENDING_MACHINE_DEVICE_SERIAL_KEYBOARD") )
+
 app = Bottle()
 
 PING_INTERVAL = 5

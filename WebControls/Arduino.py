@@ -2,8 +2,10 @@ import time
 import serial
 
 class Arduino:
-    def __init__(self,  port='/dev/serial/by-path/platform-xhci-hcd.1-usb-0:2:1.0-port0', baudrate=9600, timeout=0.1):
-        self.arduino = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
+    # def __init__(self,  port='/dev/serial/by-path/platform-xhci-hcd.1-usb-0:2:1.0-port0', baudrate=9600, timeout=0.1):
+    def __init__(self, port='/dev/serial/by-path/platform-xhci-hcd.1-usb-0:2:1.0-port0', baudrate=9600):
+
+        self.arduino = serial.serial_for_url(port=port, baudrate=baudrate)
         self.values = ['-', '+', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H','I']
 
     def write(self, index):
