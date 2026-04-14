@@ -102,7 +102,8 @@ async def send_to_all_clients(message):
         await asyncio.gather(*[client.send(message) for client in connected_clients])
 
 def main():
-    ser = serial.Serial('/dev/serial/by-path/platform-xhci-hcd.0-usb-0:2:1.0-port0', baudrate=230440, timeout=1)
+    # ser = serial.Serial('rfc2217://rasp4-64-R.local:2006', baudrate=230440, timeout=1)
+    ser = serial.serial_for_url(os.getenv('VENDING_MACHINE_DEVICE_SERIAL_LCD'), baudrate=230440)
 
     while True:
         try:
