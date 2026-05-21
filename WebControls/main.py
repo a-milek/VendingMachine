@@ -110,7 +110,7 @@ def handle_order():
 
 def run_server():
     threading.Thread(target=arduino_ping_loop, daemon=True).start()
-    run(host="0.0.0.0", port=8082, debug=True)
+    run(host="0.0.0.0", port=8080, debug=True)
 
 
 if __name__ == '__main__':
