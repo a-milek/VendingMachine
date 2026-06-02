@@ -103,7 +103,7 @@ async def send_to_all_clients(message):
 
 def main():
     # ser = serial.Serial('rfc2217://rasp4-64-R.local:2006', baudrate=230440, timeout=1)
-    ser = serial.serial_for_url(os.getenv('VENDING_MACHINE_DEVICE_SERIAL_LCD'), baudrate=230440)
+    ser = serial.serial_for_url(os.getenv('VENDING_MACHINE_DEVICE_SERIAL_LCD'), baudrate=230400)
 
     while True:
         try:
