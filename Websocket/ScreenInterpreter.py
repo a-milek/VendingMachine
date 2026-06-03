@@ -4,12 +4,12 @@ import re
 class ScreenInterpreter:
 
     def __init__(self):
-        # Add missing attribute!
         self.last_valid_price = None
 
     def interpret_lines(self, raw_lines):
 
         state = {
+            "out_of_order": False,
             "tech": False,
             "loading": False,
             "ready": False,
@@ -22,46 +22,55 @@ class ScreenInterpreter:
         }
 
         for line in raw_lines:
+            line_lower = line.lower()
 
-            # Woda/Cukier → liczymy \x01
+            # OUT OF ORDER detection (MUST be per-line)
+            if (
+                "nieczynny" in line_lower
+                or "lista bledow" in line_lower
+                or "koniec bledow" in line_lower
+                or "automat sprzedajacy" in line_lower
+            ):
+                state["out_of_order"] = True
+
+            # Woda / Cukier
             if line.startswith("Woda") or line.startswith("Cukier"):
                 state["sugar"] = line.count("\x01")
-
-                # remaining_lines.append(line)  # zachowujemy linię
                 continue
+
             if line.startswith("Brak cukru"):
                 state["sugar"] = None
                 continue
 
-            # LOADING — kontrolne znaki lub WYBRANY NAPOJ
+            # loading detection
             if any(3 <= ord(ch) <= 7 for ch in line):
                 state["loading"] = True
 
-            # Tryb TECH
+            # tech mode
             if line.startswith("TECH") or line.startswith("NAPE"):
                 state["tech"] = True
 
-            # WYBIERZ → normalny ekran
+            # reset screen
             if line.startswith("WYBIERZ"):
                 state["loading"] = False
                 state["tech"] = False
+                state["out_of_order"] = False
 
-            # Gotowy napój
+            # ready
             if line.startswith("NAPOJ"):
                 state["ready"] = True
                 state["loading"] = False
 
-            # Kredyt
+            # credit
             if line.startswith("Kredyt"):
                 match = re.search(r"(\d+\.\d{2})", line)
                 state["credit"] = float(match.group(1)) if match else 0.0
                 state["has_credit"] = True
                 state["timed_out"] = False
-                continue  # nie dodajemy linii do remaining_lines
+                continue
 
-            # Cena
+            # price
             if line.startswith("Cena"):
-                # 1) Format z przecinkiem lub kropką → używamy jako float
                 match_decimal = re.search(r"(\d+[.,]\d+)", line)
                 if match_decimal:
                     price = float(match_decimal.group(1).replace(",", "."))
@@ -69,20 +78,18 @@ class ScreenInterpreter:
                     state["current_price"] = price
                     continue
 
-                # 2) Format liczbowy bez separatora
                 match_int = re.search(r"(\d+)", line)
                 if match_int:
-                    price = float(match_int.group(1))  # ← używamy BEZ zmiany wartości
+                    price = float(match_int.group(1))
                     self.last_valid_price = price
                     state["current_price"] = price
                     continue
 
-                # 3) Jeśli brak liczby → użyj poprzedniej
                 if self.last_valid_price is not None:
                     state["current_price"] = self.last_valid_price
-                continue
+                    continue
 
-            # pozostałe linie zostają
+            # default: keep line
             state["remaining_lines"].append(line)
 
         return state
