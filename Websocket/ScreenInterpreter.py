@@ -70,24 +70,24 @@ class ScreenInterpreter:
                 continue
 
             # price
-            if line.startswith("Cena"):
-                match_decimal = re.search(r"(\d+[.,]\d+)", line)
-                if match_decimal:
-                    price = float(match_decimal.group(1).replace(",", "."))
-                    self.last_valid_price = price
-                    state["current_price"] = price
-                    continue
+            # if line.startswith("Cena"):
+            #     match_decimal = re.search(r"(\d+[.,]\d+)", line)
+            #     if match_decimal:
+            #         price = float(match_decimal.group(1).replace(",", "."))
+            #         self.last_valid_price = price
+            #         state["current_price"] = price
+            #         continue
 
-                match_int = re.search(r"(\d+)", line)
-                if match_int:
-                    price = float(match_int.group(1))
-                    self.last_valid_price = price
-                    state["current_price"] = price
-                    continue
+            #     match_int = re.search(r"(\d+)", line)
+            #     if match_int:
+            #         price = float(match_int.group(1))
+            #         self.last_valid_price = price
+            #         state["current_price"] = price
+            #         continue
 
-                if self.last_valid_price is not None:
-                    state["current_price"] = self.last_valid_price
-                    continue
+            #     if self.last_valid_price is not None:
+            #         state["current_price"] = self.last_valid_price
+            #         continue
 
             # default: keep line
             state["remaining_lines"].append(line)
