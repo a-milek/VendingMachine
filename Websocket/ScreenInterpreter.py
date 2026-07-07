@@ -34,7 +34,7 @@ class ScreenInterpreter:
                 state["out_of_order"] = True
 
             # Woda / Cukier
-            if line.startswith("Woda") or line.startswith("Cukier"):
+            if line.startswith("Cukier"):
                 state["sugar"] = line.count("\x01")
                 continue
 

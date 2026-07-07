@@ -1,6 +1,9 @@
 from ScreenInterpreter import ScreenInterpreter
 
-raw = '\nNAPOJ GOTOWY\nOdbierz\n'
+raw = '\nTECH> 2.2.2.1\nPORCJE PROSZKU\nWYBOR PRZYCISK/NR 10\nWoda  1  '
+
+
+
 # '\n\n\nCena    :      2.00'
 # '\nWoda      - \x01 \x01 \x01 +\n\n'
 # 'WYBRANY NAPOJ\nWoda      - \x01 \x01 \x01 +\n>'
