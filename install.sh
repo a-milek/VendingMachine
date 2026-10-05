@@ -35,13 +35,16 @@ mv "$TARGET_DIR/machinekiosk.desktop" "$USER_HOME/.config/autostart/"
 
 mv "$TARGET_DIR/serverbootup.service" /etc/systemd/system/ 
 mv "$TARGET_DIR/websocket.service" /etc/systemd/system/ 
-mv "$TARGET_DIR/statistics.service" /etc/systemd/system/ 
+mv "$TARGET_DIR/statistics.service" /etc/systemd/system/
+mv "$TARGET_DIR/screeninterpreter.service" /etc/systemd/system/
 
+chmod +x "$TARGET_DIR"/*.sh
 
 systemctl daemon-reload
 systemctl enable --now serverbootup.service
 systemctl enable --now websocket.service
 systemctl enable --now statistics.service
+systemctl enable --now screeninterpreter.service
 
 curl --silent --location -O https://repos.influxdata.com/influxdata-archive.key
 gpg --show-keys --with-fingerprint --with-colons ./influxdata-archive.key 2>&1 \
@@ -65,8 +68,6 @@ else
     echo '$USER not found, probably docker install'
 fi
 
-
-chmod +x /home/amilek/Documents/Server/statisticsscript.sh
 
 sudo apt remove gnome-keyring || true
 
