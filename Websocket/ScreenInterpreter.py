@@ -1,12 +1,37 @@
+import os
 import re
+import time
+
+# Unique frames that matched no known pattern are appended here, so init/error
+# screens (PL/EN/IT) can be collected and given proper handling later.
+UNKNOWN_FRAMES_LOG = os.getenv(
+    "VENDING_MACHINE_UNKNOWN_FRAMES_LOG",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "unknown_frames.log"),
+)
 
 
 class ScreenInterpreter:
 
     def __init__(self):
         self.last_valid_price = None
+        # Set by a frame we can't interpret (init, errors, other languages);
+        # held until the idle WYBIERZ screen so multi-step screens don't flicker.
+        self.unrecognized = False
+        self.logged_frames = set()
+
+    def _log_unknown_frame(self, raw_lines):
+        key = "\n".join(raw_lines)
+        if key in self.logged_frames:
+            return
+        self.logged_frames.add(key)
+        try:
+            with open(UNKNOWN_FRAMES_LOG, "a", encoding="utf-8") as f:
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {raw_lines!r}\n")
+        except OSError as e:
+            print(f"Could not write {UNKNOWN_FRAMES_LOG}: {e}")
 
     def interpret_lines(self, raw_lines):
+        recognized = False
 
         state = {
             "out_of_order": False,
@@ -18,7 +43,9 @@ class ScreenInterpreter:
             "timed_out": False,
             "sugar": None,
             "credit": None,
-            "remaining_lines": []
+            "remaining_lines": [],
+            "raw_lines": list(raw_lines),
+            "unrecognized": False
         }
 
         for line in raw_lines:
@@ -36,10 +63,12 @@ class ScreenInterpreter:
             # Woda / Cukier
             if line.startswith("Cukier"):
                 state["sugar"] = line.count("\x01")
+                recognized = True
                 continue
 
             if line.startswith("Brak cukru"):
                 state["sugar"] = None
+                recognized = True
                 continue
 
             # loading detection
@@ -55,6 +84,8 @@ class ScreenInterpreter:
                 state["loading"] = False
                 state["tech"] = False
                 state["out_of_order"] = False
+                recognized = True
+                self.unrecognized = False
 
             # ready
             if line.startswith("NAPOJ"):
@@ -69,7 +100,10 @@ class ScreenInterpreter:
                 state["timed_out"] = False
                 continue
 
-            # price
+            # price (shown during a normal selection, so it's a known screen)
+            if line.startswith("Cena"):
+                recognized = True
+
             # if line.startswith("Cena"):
             #     match_decimal = re.search(r"(\d+[.,]\d+)", line)
             #     if match_decimal:
@@ -91,5 +125,13 @@ class ScreenInterpreter:
 
             # default: keep line
             state["remaining_lines"].append(line)
+
+        recognized = recognized or any(
+            state[k] for k in ("out_of_order", "tech", "loading", "ready", "has_credit")
+        )
+        if not recognized:
+            self.unrecognized = True
+            self._log_unknown_frame(raw_lines)
+        state["unrecognized"] = self.unrecognized
 
         return state
