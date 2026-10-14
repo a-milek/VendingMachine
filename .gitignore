@@ -7,5 +7,3 @@ WebControls/.idea
 Websocket/.idea
 .idea
 Websocket/__pycache__/
-
-Websocket/unknown_frames.log
