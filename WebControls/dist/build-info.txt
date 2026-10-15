@@ -1,5 +1,5 @@
 branch: garage-test
-commit: 4b2f864d11f2d9f8c8b29b76f138baee6c09a7b5
-message: Revert "Show the build's git branch and commit in the corner of the kiosk"
-date: 2026-10-15T11:10:13+02:00
-built: 2026-10-15T09:10:29.931Z
+commit: 4559448aed5f87df5c8bbe4f78909c873c2040da
+message: Keep the coffee list on the Pi (coffee-data endpoint) instead of only in localStorage
+date: 2026-10-15T11:39:09+02:00
+built: 2026-10-15T09:39:24.735Z
