@@ -1,5 +1,5 @@
 branch: garage-test
-commit: f38c09663d9622b8db5c8b6683fd2d387b4d232c
-message: Show the raw LCD instead of "NO DATA" when payservice sends no status
-date: 2026-10-14T13:13:44+02:00
-built: 2026-10-14T11:14:10.213Z
+commit: 47e21edfd571779c432eb882ece92617e4c149b6
+message: Show the build's git branch and commit in the corner of the kiosk
+date: 2026-10-15T11:05:08+02:00
+built: 2026-10-15T09:05:51.490Z
