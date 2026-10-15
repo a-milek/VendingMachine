@@ -7,6 +7,7 @@ from bottle import route, run, static_file, request, response, Bottle, redirect
 from Arduino import Arduino
 import sys
 import os
+import json
 import pika
 import requests
 from bottle import route, request, response
@@ -17,6 +18,12 @@ app = Bottle()
 
 PING_INTERVAL = 5
 PING_ENABLED = False
+
+# Coffee list (names, prices, servIds, images) edited from the kiosk's tech mode.
+# Kept outside the repo so git pull / dev-update never overwrite it.
+COFFEE_DATA = os.path.expanduser(
+    os.getenv("VENDING_MACHINE_COFFEE_DATA", "~/vending-data/coffee-data.json")
+)
 
 
 
@@ -46,6 +53,46 @@ def arduino_ping_loop():
 @route('/pomodoro-app/<filepath:path>')
 def serve_pomodoro(filepath):
     return static_file(filepath, root='C:/Users/Ania/Downloads/github-pages/artifact')
+
+
+# Must be defined before the static catch-all below, which would otherwise match it
+@route('/vending-machines/coffee-data', method='GET')
+def get_coffee_data():
+    response.headers['Cache-Control'] = 'no-store'
+    if not os.path.exists(COFFEE_DATA):
+        # Nothing saved yet: the UI then uploads its own list
+        response.status = 404
+        return {"error": "No coffee data saved yet"}
+    response.content_type = 'application/json'
+    with open(COFFEE_DATA, encoding='utf-8') as f:
+        return f.read()
+
+
+@route('/vending-machines/coffee-data', method='PUT')
+def put_coffee_data():
+    try:
+        data = request.json
+        if not isinstance(data, list) or not all(
+            isinstance(c, dict) and "servId" in c and "price" in c and "name" in c
+            for c in data
+        ):
+            raise ValueError(f"Invalid coffee data: {data!r}")
+
+        # Write to a temp file and swap it in, so a crash never leaves half a file
+        os.makedirs(os.path.dirname(COFFEE_DATA), exist_ok=True)
+        tmp = COFFEE_DATA + ".tmp"
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, COFFEE_DATA)
+        print(f"Coffee data saved to {COFFEE_DATA} ({len(data)} items)")
+        return {"saved": len(data)}
+
+    except Exception as e:
+        print(f"Error while saving coffee data: {e}")
+        traceback.print_exc()
+        os._exit(1)
 
 
 @route('/vending-machines/<filepath:path>')
