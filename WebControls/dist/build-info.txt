@@ -1,5 +1,5 @@
 branch: garage-test
-commit: 47e21edfd571779c432eb882ece92617e4c149b6
-message: Show the build's git branch and commit in the corner of the kiosk
-date: 2026-10-15T11:05:08+02:00
-built: 2026-10-15T09:05:51.490Z
+commit: 4b2f864d11f2d9f8c8b29b76f138baee6c09a7b5
+message: Revert "Show the build's git branch and commit in the corner of the kiosk"
+date: 2026-10-15T11:10:13+02:00
+built: 2026-10-15T09:10:29.931Z
