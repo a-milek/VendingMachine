@@ -25,6 +25,12 @@ COFFEE_DATA = os.path.expanduser(
     os.getenv("VENDING_MACHINE_COFFEE_DATA", "~/vending-data/coffee-data.json")
 )
 
+# Remote reload: the kiosk UI polls /vending-machines/reload-token and reloads
+# itself (once idle) when the token changes. It changes when a new UI build is
+# deployed (dist/build-info.txt), when this server restarts, or on demand via
+# POST /vending-machines/reload.
+RELOAD_COUNTER = str(time.time())
+BUILD_INFO = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'build-info.txt')
 
 
 
@@ -56,6 +62,24 @@ def serve_pomodoro(filepath):
 
 
 # Must be defined before the static catch-all below, which would otherwise match it
+@route('/vending-machines/reload-token', method='GET')
+def get_reload_token():
+    response.headers['Cache-Control'] = 'no-store'
+    try:
+        build = str(os.path.getmtime(BUILD_INFO))
+    except OSError:
+        build = "none"
+    return {"token": f"{RELOAD_COUNTER}:{build}"}
+
+
+@route('/vending-machines/reload', method='POST')
+def force_reload():
+    global RELOAD_COUNTER
+    RELOAD_COUNTER = str(time.time())
+    print("Kiosk reload requested")
+    return {"token": RELOAD_COUNTER}
+
+
 @route('/vending-machines/coffee-data', method='GET')
 def get_coffee_data():
     response.headers['Cache-Control'] = 'no-store'

@@ -1,5 +1,5 @@
 branch: garage-test
-commit: 216943ae0b324c58ef635a33f8aaead9c046fc85
-message: Fit coffee grid to screen in 4 columns; close session if brewing never starts
-date: 2026-11-10T12:06:08+01:00
-built: 2026-11-10T11:06:23.978Z
+commit: 0df71506498e14d32e43d776c7d88f6e7e075597
+message: Reload the kiosk remotely when the Pi's reload token changes
+date: 2026-11-10T12:10:40+01:00
+built: 2026-11-10T11:10:58.993Z
