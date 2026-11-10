@@ -1,5 +1,5 @@
 branch: garage-test
-commit: 4559448aed5f87df5c8bbe4f78909c873c2040da
-message: Keep the coffee list on the Pi (coffee-data endpoint) instead of only in localStorage
-date: 2026-10-15T11:39:09+02:00
-built: 2026-10-15T09:39:24.735Z
+commit: 216943ae0b324c58ef635a33f8aaead9c046fc85
+message: Fit coffee grid to screen in 4 columns; close session if brewing never starts
+date: 2026-11-10T12:06:08+01:00
+built: 2026-11-10T11:06:23.978Z
