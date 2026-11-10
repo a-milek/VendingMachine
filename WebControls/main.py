@@ -121,7 +121,13 @@ def put_coffee_data():
 
 @route('/vending-machines/<filepath:path>')
 def serve_vending(filepath):
-    return static_file(filepath, root='./dist')
+    resp = static_file(filepath, root='./dist')
+    # The kiosk must never show a stale index.html (it names the current JS
+    # bundle), otherwise a new build only appears after a manual Shift+F5.
+    # Hashed files under assets/ never change, so they can stay cached.
+    if not filepath.startswith('assets/'):
+        resp.set_header('Cache-Control', 'no-cache')
+    return resp
 
 @route('/vending-machines/statservice/order_complete', method=['POST', 'OPTIONS'])
 def statservice_proxy():
