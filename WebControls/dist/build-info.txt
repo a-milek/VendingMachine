@@ -1,5 +1,5 @@
 branch: garage-test
-commit: 0df71506498e14d32e43d776c7d88f6e7e075597
-message: Reload the kiosk remotely when the Pi's reload token changes
-date: 2026-11-10T12:10:40+01:00
-built: 2026-11-10T11:10:58.993Z
+commit: 7ef3909085a559ccc0331fcc6d28c92d33a36803
+message: 16 coffee buttons; idle-screen ad fits the screen
+date: 2026-11-10T12:47:38+01:00
+built: 2026-11-10T11:47:55.228Z
