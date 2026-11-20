@@ -9,6 +9,22 @@ UNKNOWN_FRAMES_LOG = os.getenv(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "unknown_frames.log"),
 )
 
+OUT_OF_ORDER_MARKERS = ("nieczynny", "lista bledow", "koniec bledow", "automat sprzedajacy")
+KNOWN_PREFIXES = ("Cukier", "Brak cukru", "WYBIERZ", "NAPOJ", "Kredyt", "Cena", "TECH", "NAPE")
+
+
+def is_known_line(line):
+    """True for LCD lines the interpreter understands; the rest (e.g.
+    "Kawa ziarn.niedostep") are reported in unknown_lines so the UI shows them."""
+    if not line.strip():
+        return True
+    if line.startswith(KNOWN_PREFIXES):
+        return True
+    if any(3 <= ord(ch) <= 7 for ch in line):  # progress bar
+        return True
+    line_lower = line.lower()
+    return any(m in line_lower for m in OUT_OF_ORDER_MARKERS)
+
 
 class ScreenInterpreter:
 
@@ -45,19 +61,16 @@ class ScreenInterpreter:
             "credit": None,
             "remaining_lines": [],
             "raw_lines": list(raw_lines),
-            "unrecognized": False
+            "unrecognized": False,
+            # lines not understood, shown by the UI as an extra line
+            "unknown_lines": [l.strip() for l in raw_lines if not is_known_line(l)],
         }
 
         for line in raw_lines:
             line_lower = line.lower()
 
             # OUT OF ORDER detection (MUST be per-line)
-            if (
-                "nieczynny" in line_lower
-                or "lista bledow" in line_lower
-                or "koniec bledow" in line_lower
-                or "automat sprzedajacy" in line_lower
-            ):
+            if any(m in line_lower for m in OUT_OF_ORDER_MARKERS):
                 state["out_of_order"] = True
 
             # Woda / Cukier
