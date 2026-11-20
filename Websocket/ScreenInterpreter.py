@@ -12,8 +12,17 @@ UNKNOWN_FRAMES_LOG = os.getenv(
 OUT_OF_ORDER_MARKERS = ("nieczynny", "lista bledow", "koniec bledow", "automat sprzedajacy")
 KNOWN_PREFIXES = (
     "Cukier", "Brak cukru", "Bez cukru", "WYBIERZ", "WYBRANY", "NAPOJ",
-    "Kredyt", "Cena", "TECH", "NAPE",
+    "ODBIERZ", "Kredyt", "Cena", "TECH", "NAPE",
 )
+# Machine messages we don't translate but know are normal operation. They're
+# still reported in unknown_lines (the UI shows them as an extra line), but a
+# frame showing only one of them must not flip the sticky full-screen
+# unrecognized mode. Matched case-insensitively as prefixes.
+NOTICE_PREFIXES = ("kawa ziarn", "wybor", "nieudane")
+
+
+def is_notice_line(line):
+    return line.strip().lower().startswith(NOTICE_PREFIXES)
 
 
 def is_known_line(line):
@@ -93,10 +102,15 @@ class ScreenInterpreter:
                 recognized = True
                 continue
 
-            # "WYBRANY NAPOJ": shown briefly between selection and brewing.
-            # Must count as known, or the sticky unrecognized flag would hide
-            # the progress screen for the whole brew.
+            # "WYBRANY NAPOJ": a drink was selected and is about to brew. It's a
+            # known screen and, like WYBIERZ, clears the sticky unrecognized
+            # flag, so an earlier odd frame can't hide the progress screen.
             if line.startswith("WYBRANY"):
+                recognized = True
+                self.unrecognized = False
+
+            # known machine messages (shown via unknown_lines, see NOTICE_PREFIXES)
+            if is_notice_line(line):
                 recognized = True
 
             # loading detection
