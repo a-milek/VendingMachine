@@ -10,7 +10,10 @@ UNKNOWN_FRAMES_LOG = os.getenv(
 )
 
 OUT_OF_ORDER_MARKERS = ("nieczynny", "lista bledow", "koniec bledow", "automat sprzedajacy")
-KNOWN_PREFIXES = ("Cukier", "Brak cukru", "WYBIERZ", "NAPOJ", "Kredyt", "Cena", "TECH", "NAPE")
+KNOWN_PREFIXES = (
+    "Cukier", "Brak cukru", "Bez cukru", "WYBIERZ", "WYBRANY", "NAPOJ",
+    "Kredyt", "Cena", "TECH", "NAPE",
+)
 
 
 def is_known_line(line):
@@ -83,6 +86,18 @@ class ScreenInterpreter:
                 state["sugar"] = None
                 recognized = True
                 continue
+
+            # sugar set to zero by the customer
+            if line.startswith("Bez cukru"):
+                state["sugar"] = 0
+                recognized = True
+                continue
+
+            # "WYBRANY NAPOJ": shown briefly between selection and brewing.
+            # Must count as known, or the sticky unrecognized flag would hide
+            # the progress screen for the whole brew.
+            if line.startswith("WYBRANY"):
+                recognized = True
 
             # loading detection
             if any(3 <= ord(ch) <= 7 for ch in line):
