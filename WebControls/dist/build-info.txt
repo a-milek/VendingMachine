@@ -1,5 +1,5 @@
 branch: myslowice-vending-machine
-commit: bb9dcbe6f2ae6c4550c0038ec6d9dde2447a39f8 (uncommitted changes)
-message: Take no money while the machine is out of order
-date: 2026-11-24T11:21:27+01:00
-built: 2026-11-24T10:21:44.071Z
+commit: b492c69e63b282c62a4eda253b1123d8f82468f5 (uncommitted changes)
+message: Only take money while the machine shows WYBIERZ or WYBRANY
+date: 2026-11-24T11:30:50+01:00
+built: 2026-11-24T10:31:06.270Z
