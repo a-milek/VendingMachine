@@ -1,5 +1,5 @@
 branch: myslowice-vending-machine
-commit: 50732011468cff890a338d9a0d854c9f050c68ca
-message: Revert "Show the raw LCD on screens the interpreter doesn't recognize"
-date: 2026-10-14T12:52:29+02:00
-built: 2026-11-24T09:40:44.866Z
+commit: 81adf600033de949870a186ad1ab2aafc28d64ec (uncommitted changes)
+message: Replace 300ml ad gif
+date: 2026-11-24T10:56:44+01:00
+built: 2026-11-24T09:57:45.116Z
