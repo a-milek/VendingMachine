@@ -1,5 +1,5 @@
 branch: myslowice-vending-machine
-commit: 81adf600033de949870a186ad1ab2aafc28d64ec (uncommitted changes)
-message: Replace 300ml ad gif
-date: 2026-11-24T10:56:44+01:00
-built: 2026-11-24T09:57:45.116Z
+commit: 27572b2a1e347f5c5ee61044b863a37d6d70b5f5 (uncommitted changes)
+message: Keep the coffee list on the Pi (coffee-data endpoint) instead of only in localStorage
+date: 2026-11-24T10:59:32+01:00
+built: 2026-11-24T10:01:20.715Z
