@@ -18,6 +18,13 @@ app = Bottle()
 PING_INTERVAL = 5
 PING_ENABLED = False
 
+# Remote reload: the kiosk UI polls /vending-machines/reload-token and reloads
+# itself (once idle) when the token changes. It changes when a new UI build is
+# deployed (dist/build-info.txt), when this server restarts, or on demand via
+# POST /vending-machines/reload.
+RELOAD_COUNTER = str(time.time())
+BUILD_INFO = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'build-info.txt')
+
 
 
 
@@ -48,9 +55,34 @@ def serve_pomodoro(filepath):
     return static_file(filepath, root='C:/Users/Ania/Downloads/github-pages/artifact')
 
 
+# Must be defined before the static catch-all below, which would otherwise match it
+@route('/vending-machines/reload-token', method='GET')
+def get_reload_token():
+    response.headers['Cache-Control'] = 'no-store'
+    try:
+        build = str(os.path.getmtime(BUILD_INFO))
+    except OSError:
+        build = "none"
+    return {"token": f"{RELOAD_COUNTER}:{build}"}
+
+
+@route('/vending-machines/reload', method='POST')
+def force_reload():
+    global RELOAD_COUNTER
+    RELOAD_COUNTER = str(time.time())
+    print("Kiosk reload requested")
+    return {"token": RELOAD_COUNTER}
+
+
 @route('/vending-machines/<filepath:path>')
 def serve_vending(filepath):
-    return static_file(filepath, root='./dist')
+    resp = static_file(filepath, root='./dist')
+    # The kiosk must never show a stale index.html (it names the current JS
+    # bundle), otherwise a new build only appears after a manual Shift+F5.
+    # Hashed files under assets/ never change, so they can stay cached.
+    if not filepath.startswith('assets/'):
+        resp.set_header('Cache-Control', 'no-cache')
+    return resp
 
 @route('/vending-machines/statservice/order_complete', method=['POST', 'OPTIONS'])
 def statservice_proxy():
